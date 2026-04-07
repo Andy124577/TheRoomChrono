@@ -297,33 +297,69 @@
 
         .person-adjust-row {
             display: flex;
-            gap: 3px;
+            gap: 5px;
             align-items: center;
             justify-content: center;
         }
 
-        .person-adjust-row .adjust-label {
-            font-size: 0.68em;
+        input.time-part-input {
+            width: 80px;
+            padding: 6px 4px;
+            font-size: 1em;
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
             color: white;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
         }
 
-        .person-adjust-row input[type="number"] {
-            width: 38px;
-            padding: 3px;
-            font-size: 0.72em;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.2);
+        input.time-part-input::placeholder {
+            color: rgba(255, 255, 255, 0.45);
+            font-weight: 600;
+        }
+
+        input.time-part-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.25);
             color: white;
         }
 
-        .person-adjust-row input[type="number"]::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+        .time-colon {
+            font-size: 1.1em;
+            font-weight: 800;
+            color: white;
+            line-height: 1;
+        }
+
+        /* Team section has white background — override to dark styling */
+        .team-adjust input.time-part-input {
+            border: 2px solid #5c4cfc;
+            background: #f8f9fa;
+            color: #333;
+            width: 58px;
+        }
+
+        .team-adjust input.time-part-input::placeholder {
+            color: #aaa;
+        }
+
+        .team-adjust input.time-part-input:focus {
+            border-color: #ff2e7e;
+            background: white;
+            color: #333;
+        }
+
+        .team-adjust .time-colon {
+            color: #4d0279;
         }
 
         .person-adjust-row .adjust-btn {
-            padding: 3px 7px;
-            font-size: 0.68em;
+            padding: 6px 11px;
+            font-size: 1em;
+            font-weight: 800;
         }
 
         .choice-section {
@@ -366,6 +402,51 @@
         .win-btn.selected {
             border-color: #2d0150;
             box-shadow: 0 0 12px rgba(92, 76, 252, 0.8);
+        }
+
+        /* ---- PENDING ADJUSTMENTS ---- */
+        .pending-info {
+            font-size: 0.65em;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+
+        .pending-add {
+            background: #00c851;
+            color: white;
+        }
+
+        .pending-sub {
+            background: #ff4444;
+            color: white;
+        }
+
+        .apply-btn {
+            background: linear-gradient(135deg, #00c851 0%, #007E33 100%);
+            color: white;
+            padding: 8px 22px;
+            font-size: 0.85em;
+            font-weight: 800;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+            transition: all 0.2s ease;
+            animation: applyPulse 1.5s ease-in-out infinite;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 200, 81, 0.5);
+        }
+
+        @keyframes applyPulse {
+            0%, 100% { box-shadow: 0 3px 10px rgba(0,0,0,0.18); }
+            50% { box-shadow: 0 3px 25px rgba(0, 200, 81, 0.6); }
         }
 
         /* ---- CALCULATE SECTION ---- */

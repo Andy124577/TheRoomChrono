@@ -28,6 +28,12 @@
             person5: null
         };
 
+        const pendingAdjustments = {
+            team: 0, person1: 0, person2: 0, person3: 0, person4: 0, person5: 0
+        };
+
+        const broadcastChannel = new BroadcastChannel('theroomchrono');
+
         // 1. Store interval IDs for each timer
             const countdownIntervals = {};
 
@@ -184,38 +190,67 @@
             }
         }
 
-        async function adjustTimer(timerId, action, unit) {
-            const inputId = timerId === 'team' ? `team-adjust-${unit}` : `${timerId}-adjust-${unit}`;
-            const input = document.getElementById(inputId);
-            const value = parseInt(input.value) || 0;
- 
+        function adjustTimer(timerId, action) {
+            const prefix = timerId === 'team' ? 'team-adjust' : `${timerId}-adjust`;
+            const minInput = document.getElementById(`${prefix}-min`);
+            const secInput = document.getElementById(`${prefix}-sec`);
+            const total = (parseInt(minInput.value) || 0) * 60 + (parseInt(secInput.value) || 0);
+            if (total <= 0) return;
 
-            if (value <= 0) return;
+            pendingAdjustments[timerId] += action === 'add' ? total : -total;
+            minInput.value = '';
+            secInput.value = '';
+            updatePendingDisplay(timerId);
+        }
 
-            const seconds = unit === 'min' ? value * 60 : value;
-            const milliseconds = seconds * 1000;
-            const apiId = timerIds[timerId];
+        function updatePendingDisplay(timerId) {
+            const pending = pendingAdjustments[timerId];
+            const el = document.getElementById(timerId === 'team' ? 'team-pending' : `${timerId}-pending`);
+            if (el) {
+                if (pending !== 0) {
+                    el.textContent = (pending > 0 ? '+' : '') + pending + 's en attente';
+                    el.className = 'pending-info ' + (pending > 0 ? 'pending-add' : 'pending-sub');
+                } else {
+                    el.textContent = '';
+                    el.className = 'pending-info';
+                }
+            }
+            const hasPending = Object.values(pendingAdjustments).some(v => v !== 0);
+            const btn = document.getElementById('apply-btn');
+            if (btn) btn.style.display = hasPending ? 'inline-flex' : 'none';
+        }
+
+        async function applyAdjustments() {
+            const snapshot = { ...pendingAdjustments };
+            if (!Object.values(snapshot).some(v => v !== 0)) return;
+
+            // Capture old values before API calls
+            const oldValues = {};
+            const newValues = {};
+            Object.keys(snapshot).forEach(id => {
+                oldValues[id] = timers[id].time;
+                newValues[id] = Math.max(0, timers[id].time + snapshot[id]);
+            });
 
             try {
-                console.log(`➕➖ ${action}ing ${milliseconds}ms to timer ${apiId}`);
-                const endpoint = action === 'add' ? 'add' : 'subtract';
-                const response = await fetch(`${API_BASE}/${endpoint}/${apiId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ amount: milliseconds })
-                });
+                for (const [timerId, delta] of Object.entries(snapshot)) {
+                    if (delta === 0) continue;
+                    const apiId = timerIds[timerId];
+                    const endpoint = delta > 0 ? 'add' : 'subtract';
+                    await fetch(`${API_BASE}/${endpoint}/${apiId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: Math.abs(delta) * 1000 })
+                    });
+                }
 
-                const data = await response.json();
-                console.log('✅ Adjust response:', data);
+                Object.keys(pendingAdjustments).forEach(k => { pendingAdjustments[k] = 0; });
+                Object.keys(pendingAdjustments).forEach(id => updatePendingDisplay(id));
 
-                if (!response.ok) throw new Error(`Failed to ${action} time`);
-
-                input.value = '';
+                broadcastChannel.postMessage({ type: 'apply-animation', adjustments: snapshot, oldValues, newValues });
                 await fetchTimers();
             } catch (error) {
-                console.error(`❌ Error ${action}ing timer:`, error);
+                console.error('❌ Error applying adjustments:', error);
             }
         }
 

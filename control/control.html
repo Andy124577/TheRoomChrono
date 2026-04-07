@@ -19,6 +19,7 @@
             <div class="team-left">
                 <span class="team-title">🏆 Équipe</span>
                 <span class="status stopped" id="team-status">Arrêté</span>
+                <span class="pending-info" id="team-pending"></span>
             </div>
             <div class="team-timer" id="team-display">25:00</div>
             <div class="team-controls">
@@ -27,14 +28,11 @@
                 <button class="reset-btn" onclick="resetTimer('team')">Reset</button>
             </div>
             <div class="team-adjust">
-                <span class="adjust-label">Sec:</span>
-                <input type="number" id="team-adjust-sec" placeholder="Sec" min="1">
-                <button class="adjust-btn" onclick="adjustTimer('team', 'add', 'sec')">+</button>
-                <button class="adjust-btn" onclick="adjustTimer('team', 'subtract', 'sec')">-</button>
-                <span class="adjust-label" style="margin-left:4px;">Min:</span>
-                <input type="number" id="team-adjust-min" placeholder="Min" min="1">
-                <button class="adjust-btn" onclick="adjustTimer('team', 'add', 'min')">+</button>
-                <button class="adjust-btn" onclick="adjustTimer('team', 'subtract', 'min')">-</button>
+                <button class="adjust-btn" onclick="adjustTimer('team', 'add')">+</button>
+                <input type="number" id="team-adjust-min" placeholder="0" min="0" class="time-part-input">
+                <span class="time-colon">:</span>
+                <input type="number" id="team-adjust-sec" placeholder="00" min="0" max="59" class="time-part-input">
+                <button class="adjust-btn" onclick="adjustTimer('team', 'subtract')">−</button>
             </div>
         </div>
 
@@ -54,6 +52,7 @@
                         </div>
                         <div class="person-name">Joueur 1</div>
                         <span class="status stopped" id="person1-status">Arrêté</span>
+                        <span class="pending-info" id="person1-pending"></span>
                     </div>
                     <div class="timer-display" id="person1-display">5:00</div>
                     <div class="person-controls">
@@ -62,16 +61,11 @@
                         <button class="reset-btn" onclick="resetTimer('person1')">Reset</button>
                     </div>
                     <div class="person-adjust-row">
-                        <span class="adjust-label">S:</span>
-                        <input type="number" id="person1-adjust-sec" placeholder="S" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person1', 'add', 'sec')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person1', 'subtract', 'sec')">-</button>
-                    </div>
-                    <div class="person-adjust-row">
-                        <span class="adjust-label">M:</span>
-                        <input type="number" id="person1-adjust-min" placeholder="M" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person1', 'add', 'min')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person1', 'subtract', 'min')">-</button>
+                        <button class="adjust-btn" onclick="adjustTimer('person1', 'add')">+</button>
+                        <input type="number" id="person1-adjust-min" placeholder="0" min="0" class="time-part-input">
+                        <span class="time-colon">:</span>
+                        <input type="number" id="person1-adjust-sec" placeholder="00" min="0" max="59" class="time-part-input">
+                        <button class="adjust-btn" onclick="adjustTimer('person1', 'subtract')">−</button>
                     </div>
                     <div class="choice-section">
                         <div class="choice-buttons">
@@ -91,6 +85,7 @@
                         </div>
                         <div class="person-name">Joueur 2</div>
                         <span class="status stopped" id="person2-status">Arrêté</span>
+                        <span class="pending-info" id="person2-pending"></span>
                     </div>
                     <div class="timer-display" id="person2-display">5:00</div>
                     <div class="person-controls">
@@ -99,16 +94,11 @@
                         <button class="reset-btn" onclick="resetTimer('person2')">Reset</button>
                     </div>
                     <div class="person-adjust-row">
-                        <span class="adjust-label">S:</span>
-                        <input type="number" id="person2-adjust-sec" placeholder="S" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person2', 'add', 'sec')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person2', 'subtract', 'sec')">-</button>
-                    </div>
-                    <div class="person-adjust-row">
-                        <span class="adjust-label">M:</span>
-                        <input type="number" id="person2-adjust-min" placeholder="M" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person2', 'add', 'min')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person2', 'subtract', 'min')">-</button>
+                        <button class="adjust-btn" onclick="adjustTimer('person2', 'add')">+</button>
+                        <input type="number" id="person2-adjust-min" placeholder="0" min="0" class="time-part-input">
+                        <span class="time-colon">:</span>
+                        <input type="number" id="person2-adjust-sec" placeholder="00" min="0" max="59" class="time-part-input">
+                        <button class="adjust-btn" onclick="adjustTimer('person2', 'subtract')">−</button>
                     </div>
                     <div class="choice-section">
                         <div class="choice-buttons">
@@ -128,6 +118,7 @@
                         </div>
                         <div class="person-name">Joueur 3</div>
                         <span class="status stopped" id="person3-status">Arrêté</span>
+                        <span class="pending-info" id="person3-pending"></span>
                     </div>
                     <div class="timer-display" id="person3-display">5:00</div>
                     <div class="person-controls">
@@ -136,16 +127,11 @@
                         <button class="reset-btn" onclick="resetTimer('person3')">Reset</button>
                     </div>
                     <div class="person-adjust-row">
-                        <span class="adjust-label">S:</span>
-                        <input type="number" id="person3-adjust-sec" placeholder="S" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person3', 'add', 'sec')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person3', 'subtract', 'sec')">-</button>
-                    </div>
-                    <div class="person-adjust-row">
-                        <span class="adjust-label">M:</span>
-                        <input type="number" id="person3-adjust-min" placeholder="M" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person3', 'add', 'min')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person3', 'subtract', 'min')">-</button>
+                        <button class="adjust-btn" onclick="adjustTimer('person3', 'add')">+</button>
+                        <input type="number" id="person3-adjust-min" placeholder="0" min="0" class="time-part-input">
+                        <span class="time-colon">:</span>
+                        <input type="number" id="person3-adjust-sec" placeholder="00" min="0" max="59" class="time-part-input">
+                        <button class="adjust-btn" onclick="adjustTimer('person3', 'subtract')">−</button>
                     </div>
                     <div class="choice-section">
                         <div class="choice-buttons">
@@ -165,6 +151,7 @@
                         </div>
                         <div class="person-name">Joueur 4</div>
                         <span class="status stopped" id="person4-status">Arrêté</span>
+                        <span class="pending-info" id="person4-pending"></span>
                     </div>
                     <div class="timer-display" id="person4-display">5:00</div>
                     <div class="person-controls">
@@ -173,16 +160,11 @@
                         <button class="reset-btn" onclick="resetTimer('person4')">Reset</button>
                     </div>
                     <div class="person-adjust-row">
-                        <span class="adjust-label">S:</span>
-                        <input type="number" id="person4-adjust-sec" placeholder="S" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person4', 'add', 'sec')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person4', 'subtract', 'sec')">-</button>
-                    </div>
-                    <div class="person-adjust-row">
-                        <span class="adjust-label">M:</span>
-                        <input type="number" id="person4-adjust-min" placeholder="M" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person4', 'add', 'min')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person4', 'subtract', 'min')">-</button>
+                        <button class="adjust-btn" onclick="adjustTimer('person4', 'add')">+</button>
+                        <input type="number" id="person4-adjust-min" placeholder="0" min="0" class="time-part-input">
+                        <span class="time-colon">:</span>
+                        <input type="number" id="person4-adjust-sec" placeholder="00" min="0" max="59" class="time-part-input">
+                        <button class="adjust-btn" onclick="adjustTimer('person4', 'subtract')">−</button>
                     </div>
                     <div class="choice-section">
                         <div class="choice-buttons">
@@ -202,6 +184,7 @@
                         </div>
                         <div class="person-name">Joueur 5</div>
                         <span class="status stopped" id="person5-status">Arrêté</span>
+                        <span class="pending-info" id="person5-pending"></span>
                     </div>
                     <div class="timer-display" id="person5-display">5:00</div>
                     <div class="person-controls">
@@ -210,16 +193,11 @@
                         <button class="reset-btn" onclick="resetTimer('person5')">Reset</button>
                     </div>
                     <div class="person-adjust-row">
-                        <span class="adjust-label">S:</span>
-                        <input type="number" id="person5-adjust-sec" placeholder="S" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person5', 'add', 'sec')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person5', 'subtract', 'sec')">-</button>
-                    </div>
-                    <div class="person-adjust-row">
-                        <span class="adjust-label">M:</span>
-                        <input type="number" id="person5-adjust-min" placeholder="M" min="1">
-                        <button class="adjust-btn" onclick="adjustTimer('person5', 'add', 'min')">+</button>
-                        <button class="adjust-btn" onclick="adjustTimer('person5', 'subtract', 'min')">-</button>
+                        <button class="adjust-btn" onclick="adjustTimer('person5', 'add')">+</button>
+                        <input type="number" id="person5-adjust-min" placeholder="0" min="0" class="time-part-input">
+                        <span class="time-colon">:</span>
+                        <input type="number" id="person5-adjust-sec" placeholder="00" min="0" max="59" class="time-part-input">
+                        <button class="adjust-btn" onclick="adjustTimer('person5', 'subtract')">−</button>
                     </div>
                     <div class="choice-section">
                         <div class="choice-buttons">
@@ -231,6 +209,7 @@
             </div>
 
             <div class="calculate-section">
+                <button id="apply-btn" class="apply-btn" onclick="applyAdjustments()" style="display:none;">✅ Appliquer</button>
                 <button class="calculate-btn" onclick="calculateResults()">🎲 Calculer les Résultats</button>
                 <div class="result-text" id="result-text"></div>
             </div>

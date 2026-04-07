@@ -12,12 +12,12 @@
 
         // Persistent timers state
         const timers = {
-            team: { time: 1500, running: false, initial: 1500 },
-            person1: { time: 300, running: false, initial: 300 },
-            person2: { time: 300, running: false, initial: 300 },
-            person3: { time: 300, running: false, initial: 300 },
-            person4: { time: 300, running: false, initial: 300 },
-            person5: { time: 300, running: false, initial: 300 }
+            team:    { time: 1500, running: false, initial: 1500, animating: false },
+            person1: { time: 300,  running: false, initial: 300,  animating: false },
+            person2: { time: 300,  running: false, initial: 300,  animating: false },
+            person3: { time: 300,  running: false, initial: 300,  animating: false },
+            person4: { time: 300,  running: false, initial: 300,  animating: false },
+            person5: { time: 300,  running: false, initial: 300,  animating: false }
         };
 
         // Local countdown intervals for visual feedback
@@ -25,6 +25,7 @@
 
         function startLocalCountdown(timerId) {
             if (countdownIntervals[timerId]) return;
+            if (timers[timerId].animating) return;
             countdownIntervals[timerId] = setInterval(() => {
                 if (timers[timerId].running && timers[timerId].time > 0) {
                     timers[timerId].time--;
@@ -137,6 +138,7 @@
         }
 
         function updateTimerDisplay(timerId) {
+            if (timers[timerId].animating) return;
             if (timerId === 'team') {
                 const teamTime = document.getElementById('team-time');
                 const teamStatus = document.getElementById('team-status');
@@ -277,6 +279,88 @@
 
             // Start the loop after initial delay
             setTimeout(scheduleNextGlitch, 2000);
+        }
+
+        // ---- APPLY ANIMATION (BroadcastChannel from control) ----
+        const broadcastChannel = new BroadcastChannel('theroomchrono');
+        broadcastChannel.onmessage = async (event) => {
+            if (event.data.type === 'apply-animation') {
+                await playAdjustAnimation(event.data);
+            }
+        };
+
+        async function playAdjustAnimation({ adjustments, oldValues, newValues }) {
+            const order = ['person1', 'person2', 'person3', 'person4', 'person5', 'team'];
+
+            // Freeze ALL affected timers immediately so API polling doesn't update them
+            for (const timerId of order) {
+                if (!adjustments[timerId]) continue;
+                timers[timerId].animating = true;
+                stopLocalCountdown(timerId);
+                const timeEl = timerId === 'team'
+                    ? document.getElementById('team-time')
+                    : document.getElementById(`time-${timerId}`);
+                if (timeEl) timeEl.textContent = formatTime(oldValues[timerId]);
+            }
+
+            // Then animate one by one
+            for (const timerId of order) {
+                const delta = adjustments[timerId];
+                if (!delta) continue;
+                await animateTimerChange(timerId, delta, oldValues[timerId], newValues[timerId]);
+            }
+        }
+
+        function animateTimerChange(timerId, delta, fromValue, toValue) {
+            return new Promise(resolve => {
+                const isTeam = timerId === 'team';
+                const cardEl = isTeam
+                    ? document.getElementById('team-section')
+                    : document.getElementById(`card-${timerId}`);
+                const timeEl = isTeam
+                    ? document.getElementById('team-time')
+                    : document.getElementById(`time-${timerId}`);
+
+                if (!cardEl || !timeEl) { resolve(); return; }
+
+                // Freeze normal display updates for this timer
+                timers[timerId].animating = true;
+                stopLocalCountdown(timerId);
+
+                // Glow the card
+                const animClass = delta > 0 ? 'timer-anim-add' : 'timer-anim-sub';
+                cardEl.classList.add(animClass);
+
+                // Floating delta label
+                const overlay = document.createElement('div');
+                overlay.className = `adjust-overlay ${delta > 0 ? 'adjust-add' : 'adjust-sub'}`;
+                overlay.textContent = (delta > 0 ? '+' : '') + delta + 's';
+                cardEl.appendChild(overlay);
+
+                // Count the timer number from fromValue to toValue
+                const duration = 2000;
+                const startTime = performance.now();
+
+                function step(now) {
+                    const t = Math.min((now - startTime) / duration, 1);
+                    const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+                    timeEl.textContent = formatTime(Math.round(fromValue + (toValue - fromValue) * eased));
+
+                    if (t < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        timeEl.textContent = formatTime(toValue);
+                        timers[timerId].time = toValue;
+                        timers[timerId].animating = false;
+                        overlay.remove();
+                        cardEl.classList.remove(animClass);
+                        if (timers[timerId].running) startLocalCountdown(timerId);
+                        resolve();
+                    }
+                }
+
+                requestAnimationFrame(step);
+            });
         }
 
         // Poll l'API toutes les 500ms
