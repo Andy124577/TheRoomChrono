@@ -83,13 +83,7 @@
                         const wasRunning = timers[localKey].running;
                         const isRunning = chrono.status === 'running';
 
-                        // Update time from API when:
-                        // - Timer is stopped (sync final value)
-                        // - Timer just started (get initial value)
-                        // Don't update when timer is STILL running (let local countdown handle it)
-                        if (!isRunning || !wasRunning) {
-                            timers[localKey].time = Math.max(0, Math.floor(chrono.value / 1000));
-                        }
+                        timers[localKey].time = Math.max(0, Math.floor(chrono.value / 1000));
                         timers[localKey].running = isRunning;
                     }
                 });
@@ -279,6 +273,43 @@
                 winButton.classList.add('selected');
                 choices[personId] = 'win';
             }
+        }
+
+        async function sendTimerAction(timerId, action) {
+            const apiId = timerIds[timerId];
+            const response = await fetch(`${API_BASE}/${action}/${apiId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!response.ok) throw new Error(`Failed to ${action} timer ${apiId}`);
+        }
+
+        async function startAllPlayers() {
+            const players = ['person1', 'person2', 'person3', 'person4', 'person5'];
+            await Promise.all(players.map(id => sendTimerAction(id, 'start')));
+            await fetchTimers();
+        }
+
+        async function stopAllPlayers() {
+            const players = ['person1', 'person2', 'person3', 'person4', 'person5'];
+            await Promise.all(players.map(id => sendTimerAction(id, 'stop')));
+            await fetchTimers();
+        }
+
+        async function toggleAll() {
+            const all = ['team', 'person1', 'person2', 'person3', 'person4', 'person5'];
+            const btn = document.getElementById('toggle-all-btn');
+            const anyRunning = all.some(id => timers[id].running);
+            if (!anyRunning) {
+                await Promise.all(all.map(id => sendTimerAction(id, 'start')));
+                btn.textContent = '⏸ Arrêter tout';
+                btn.classList.add('active');
+            } else {
+                await Promise.all(all.map(id => sendTimerAction(id, 'stop')));
+                btn.textContent = '▶ Démarrer tout';
+                btn.classList.remove('active');
+            }
+            await fetchTimers();
         }
 
         async function calculateResults() {
