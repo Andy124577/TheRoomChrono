@@ -34,6 +34,7 @@
 
         const broadcastChannel = new BroadcastChannel('theroomchrono');
 
+
         // 1. Store interval IDs for each timer
             const countdownIntervals = {};
 
@@ -293,6 +294,16 @@
         async function stopAllPlayers() {
             const players = ['person1', 'person2', 'person3', 'person4', 'person5'];
             await Promise.all(players.map(id => sendTimerAction(id, 'stop')));
+            await fetchTimers();
+        }
+
+
+        async function resetAll() {
+            const all = ['team', 'person1', 'person2', 'person3', 'person4', 'person5'];
+            await Promise.all(all.map(id => sendTimerAction(id, 'reset')));
+            const btn = document.getElementById('toggle-all-btn');
+            btn.textContent = '▶ Démarrer tout';
+            btn.classList.remove('active');
             await fetchTimers();
         }
 

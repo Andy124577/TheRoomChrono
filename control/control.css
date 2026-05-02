@@ -242,6 +242,17 @@
             box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
         }
 
+
+        .reset-all-btn {
+            background: linear-gradient(135deg, #888, #555);
+            color: white;
+        }
+
+        .reset-all-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
         .toggle-all-btn {
             background: linear-gradient(135deg, #5c4cfc, #3d2fcb);
             color: white;
